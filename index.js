@@ -1,6 +1,7 @@
 const express = require('express')
 const cors = require('cors')
 const app = express()
+const Middleware = require('./middleware')
 
 const port  = process.env.PORT || 3000
 
@@ -11,14 +12,19 @@ app.use(express.urlencoded({
 }))
 
 
+
 app.get('/' , (req , res) => {
    res.send('<h1>User Microservice </h1>')
 })
 
+
 // require userRoutes
 const userRoutes = require('./routes/user.routes')
 
-// using as middleware
+// verify token before serving 
+app.use(Middleware.decodeToken)
+
+// using user routes as middleware
 app.use('/api/v1/users',userRoutes)
 
 
