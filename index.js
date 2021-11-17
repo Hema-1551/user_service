@@ -1,17 +1,28 @@
 const express = require('express')
 const cors = require('cors')
-
 const app = express()
 
+const port  = process.env.PORT || 3000
+
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({
+    extended:true
+}))
 
 
-app.get('/user' , (req , res) => {
-
-    console.log(req);
-
-    res.send(res.query)
+app.get('/' , (req , res) => {
+   res.send('<h1>User Microservice </h1>')
 })
 
-app.listen(3000,() => {
-    console.log('server running')
+// require userRoutes
+const userRoutes = require('./routes/user.routes')
+
+// using as middleware
+app.use('/api/v1/users',userRoutes)
+
+
+
+app.listen(port,() => {
+    console.log(`user microservice running on port ${port}`)
 })
