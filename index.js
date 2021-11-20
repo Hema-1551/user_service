@@ -3,18 +3,18 @@ const cors = require('cors')
 const app = express()
 const Middleware = require('./middleware')
 
-const port  = process.env.PORT || 3000
+const port = process.env.PORT || 4000
 
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({
-    extended:true
+    extended: true
 }))
 
 
 
-app.get('/' , (req , res) => {
-   res.send('<h1>User Microservice </h1>')
+app.get('/', (req, res) => {
+    res.write('<h1>User Microservice </h1>')
 })
 
 
@@ -22,13 +22,13 @@ app.get('/' , (req , res) => {
 const userRoutes = require('./routes/user.routes')
 
 // verify token before serving 
-app.use(Middleware.decodeToken)
+// app.use(Middleware.decodeToken)
 
 // using user routes as middleware
-app.use('/api/v1/users',userRoutes)
+app.use('/api/v1/users', userRoutes)
 
 
 
-app.listen(port,() => {
+app.listen(port, () => {
     console.log(`user microservice running on port ${port}`)
 })

@@ -1,68 +1,108 @@
 const admin = require('../firebase/firebase-config')
 
-const db = admin.firestore(); 
+const db = admin.firestore();
 
-const usersDb = db.collection('users'); 
+const usersDb = db.collection('users');
 
-exports.create =  async (req , res) => {
+exports.create = async (req, res) => {
 
     const body = req.body;
 
-    const uid =  body.uid;
-    const username =  body.username
+    const uid = body.uid;
+    const username = body.username
     const mobile = body.mobile
     const email = body.email
 
-   try {
-      
-      
-    // check if the document with the 
-    // requested uid is already present
+    try {
 
-    const user = await usersDb.doc(uid).get()
 
-    if(!user.exists)
-    {
-        // new user so create a document
+        /*check if the document with the 
+         requested uid is already present*/
 
-        const newUser  = {
-            username: username,
-            email: email,
-            mobile: mobile,
-            uid:uid
+        const user = await usersDb.doc(uid).get()
+
+        if (!user.exists) {
+            // new user so create a document
+
+            const newUser = {
+                username: username,
+                email: email,
+                mobile: mobile,
+                uid: uid
+            }
+
+            const dbRes = await usersDb.doc(uid).set(newUser)
+
+            res.status(200).send({
+                message: 'user created successfully',
+                dbRes: dbRes
+            })
+        }
+        else {
+            // user already exists
+
+            res.status(400).send({
+                user: user,
+                message: 'user already exists'
+            })
         }
 
-        const dbRes = await usersDb.doc(uid).set(newUser)
-         
-        res.status(200).send({
-            message:'user created successfully',
-            dbRes:dbRes
-        })
-    }
-    else
-    {
-        // user already exists
+    } catch (error) {
 
-        res.status(400).send({
-            user:user,
-            message:'user already exists'
-        })
-    }
-    
-   } catch (error) {
-         
         res.status(500).send({
-            message:'internal server error',
-            error:error
+            message: 'internal server error',
+            error: error
         })
     }
-  
+
 }
 
-exports.findAll = (req , res) => {
-    res.send('finding all users')
+exports.findAll = async (req, res) => {
+    try {
+
+        //usersDb is the table of users
+        const snapshot = await usersDb.get();
+        if (snapshot.empty) {
+            console.log('No users found')
+            return;
+        }
+
+        res.send(snapshot.docs.map(doc => doc.data()));
+
+    } catch (error) {
+
+        res.status(500).send({
+            message: 'internal server error',
+            error: error
+        })
+    }
+
+
 }
 
-exports.findById = (req , res) => {
-    res.send(`find user by id ${req.params.id}`)
+exports.findById = async (req, res) => {
+
+    try {
+        const user = await usersDb.doc(req.params.id).get()
+        if(user.exists)
+        res.send(user)
+        else
+        res.send("User Id is invalid")
+    } catch (error) {
+        res.status(500).send({
+            message: 'internal server error',
+            error: error
+        })
+    }
+
+
+    // getAuth()
+    //     .getUser(uid)
+    //     .then((userRecord) => {
+    //         // See the UserRecord reference doc for the contents of userRecord.
+    //         console.log(`Successfully fetched user data: ${userRecord.toJSON()}`);
+    //     })
+    //     .catch((error) => {
+    //         console.log('Error fetching user data:', error);
+    //     });
 }
