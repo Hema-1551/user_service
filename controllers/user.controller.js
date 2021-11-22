@@ -63,11 +63,16 @@ exports.findAll = async (req, res) => {
         //usersDb is the table of users
         const snapshot = await usersDb.get();
         if (snapshot.empty) {
-            console.log('No users found')
-            return;
+            res.send({
+                message: 'No users found',
+                users: []
+            })
         }
 
-        res.send(snapshot.docs.map(doc => doc.data()));
+        res.send({
+            users: snapshot.docs.map(doc => doc.data())
+        }
+            );
 
     } catch (error) {
 
@@ -84,10 +89,13 @@ exports.findById = async (req, res) => {
 
     try {
         const user = await usersDb.doc(req.params.id).get()
-        if(user.exists)
-        res.send(user)
+
+        console.log(user.exists)
+
+        if (user.exists)
+            res.send({user:user.data()})
         else
-        res.send("User Id is invalid")
+            res.send({message:"User Id is invalid"})
     } catch (error) {
         res.status(500).send({
             message: 'internal server error',
@@ -96,13 +104,5 @@ exports.findById = async (req, res) => {
     }
 
 
-    // getAuth()
-    //     .getUser(uid)
-    //     .then((userRecord) => {
-    //         // See the UserRecord reference doc for the contents of userRecord.
-    //         console.log(`Successfully fetched user data: ${userRecord.toJSON()}`);
-    //     })
-    //     .catch((error) => {
-    //         console.log('Error fetching user data:', error);
-    //     });
+   
 }

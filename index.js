@@ -2,8 +2,12 @@ const express = require('express')
 const cors = require('cors')
 const app = express()
 const Middleware = require('./middleware')
+const dotenv = require('dotenv')
 
-const port = process.env.PORT || 4000
+
+dotenv.config()
+
+const port = process.env.PORT || 3000
 
 app.use(cors());
 app.use(express.json());
@@ -15,6 +19,7 @@ app.use(express.urlencoded({
 
 app.get('/', (req, res) => {
     res.write('<h1>User Microservice </h1>')
+    //console.log(process.env.DB_NAME)
 })
 
 
@@ -22,6 +27,7 @@ app.get('/', (req, res) => {
 const userRoutes = require('./routes/user.routes')
 
 // verify token before serving 
+
 // app.use(Middleware.decodeToken)
 
 // using user routes as middleware
