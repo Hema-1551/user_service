@@ -23,7 +23,7 @@ router.put('/:id',userController.update_User_Details_ById);
 
 
 //Fetching request to work using UserID
-router.get('/:id/request',userController.getRequestedIdByuserId);
+router.get('/:userId/request',userController.fetchRequestesOfuserId);
 
 //Fetching request user by id
 router.get('/:id/request/:requested_id',userController.getRequestedUserIdByUserId);

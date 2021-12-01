@@ -167,15 +167,22 @@ exports.update_User_Details_ById = async (req, res) => {
 }
 
 //Fetching request to work using UserID
+
+//fetching Requests of User is working 
+//fetching where userId is wrong or user id is not existing case (server is loading)
 // not yet working
-exports.getRequestedId_ByuserId = async (req,res) =>{
+exports.fetchRequestesOfuserId = async (req,res) =>{
     try{
-        const requestsId_array = await usersCollectionReference.find({ "userId": req.params.userId.body.requests }) 
+        const userInfo = await usersCollectionReference.find({"userId": req.params.userId }) 
+        if(userInfo.exists)
         res.status(200).send({
-            requestsId_array:(requestsId_array==null)?"no Requests":requestsId_array
+            requestsId_array:(userInfo==null)?"No Requests":userInfo[0]['requests']
         })
+        else
+        requestsId_array="No Requests"
     }catch(error){
         res.status(500).json(error)
+        
     }
 }
 // not yet working
