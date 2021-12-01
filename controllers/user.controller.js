@@ -1,4 +1,4 @@
-const admin = require('../firebase/firebase-config')
+/*const admin = require('../firebase/firebase-config')
 
 const db = admin.firestore();
 
@@ -17,7 +17,7 @@ exports.create = async (req, res) => {
 
 
         /*check if the document with the 
-         requested uid is already present*/
+         requested uid is already present
 
         const user = await usersDb.doc(uid).get()
 
@@ -102,7 +102,103 @@ exports.findById = async (req, res) => {
             error: error
         })
     }
+}*/
+
+const usersCollectionReference = require('../models/users')
 
 
-   
+//method to post the work
+exports.createUser = async (req, res) => {
+
+    const newUserRow = new usersCollectionReference(req.body)
+
+    try {
+        const savedUser = await newUserRow.save()
+        res.status(200).json(savedUser)
+    } catch (error) {
+        res.status(500).json(error)
+    }
+}
+
+exports.getAllUsers = async (req, res) => {
+    try {
+        const users = await usersCollectionReference.find()
+        res.status(200).json(users)
+    } catch (error) {
+        res.status(500).json(error)
+    }
+
+}
+
+exports.getUserById = async (req, res) => {
+
+    try {
+        const user = await usersCollectionReference.find({ "userId": req.params.userId })
+        res.status(200).json(user)
+    } catch (error) {
+        res.status(500).json(error)
+    }
+
+}
+
+
+exports.deleteUserById = async (req, res) => {
+    try {
+        const deletedUser = await usersCollectionReference.deleteOne({ "userId": req.params.userId })
+        res.status(200).json(deletedUser)
+    } catch (error) {
+        res.status(500).json(error)
+    }
+}
+
+
+exports.update_User_Details_ById = async (req, res) => {
+    try {
+        const updatedUser = await usersCollectionReference.findOneAndUpdate({ userId: req.params.userId }, { $set: req.body }, { new: true })
+        res.status(200).send({
+
+            updatedUser: (updatedUser === null) ? "User doesnot exists" : updatedUser
+        })
+    }
+    catch (error) {
+        res.status(500).json(error)
+    }
+
+}
+
+//Fetching request to work using UserID
+// not yet working
+exports.getRequestedId_ByuserId = async (req,res) =>{
+    try{
+        const requestsId_array = await usersCollectionReference.find({ "userId": req.params.userId.body.requests }) 
+        res.status(200).send({
+            requestsId_array:(requestsId_array==null)?"no Requests":requestsId_array
+        })
+    }catch(error){
+        res.status(500).json(error)
+    }
+}
+// not yet working
+
+exports.getRequestedUserIdByUserId = async (req,res) =>{
+    try{
+        const requestsId_array = await usersCollectionReference.find({ "userId": req.params.userId.body.requests }) 
+        res.status(200).send({
+            requestsId_array:(requestsId_array==null)?"no Requests":requestsId_array
+        })
+    }catch(error){
+        res.status(500).json(error)
+    }
+}
+
+// just copy pasted , not yet working
+exports.deleteRequest_UserById = async (req,res) =>{
+    try{
+        const requestsId_array = await usersCollectionReference.find({ "userId": req.params.userId.body.connections }) 
+        res.status(200).send({
+            requestsId_array:(requestsId_array==null)?"no Requests":requestsId_array
+        })
+    }catch(error){
+        res.status(500).json(error)
+    }
 }

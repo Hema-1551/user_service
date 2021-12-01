@@ -4,8 +4,13 @@ const app = express()
 const Middleware = require('./middleware')
 const dotenv = require('dotenv')
 
-
+const mongoose = require('mongoose')
+const helmet = require('helmet')
+const morgan = require('morgan')
 dotenv.config()
+
+app.use(helmet())
+app.use(morgan('common'))
 
 const port = process.env.PORT || 3000
 
@@ -35,6 +40,12 @@ app.use('/api/v1/users', userRoutes)
 
 
 
-app.listen(port, () => {
-    console.log(`user microservice running on port ${port}`)
-})
+mongoose.connect(process.env.MONGO_URL,
+    {useNewUrlParser: true, useUnifiedTopology: true})
+    .then(() => {
+        app.listen(port, () => {
+            console.log(`User microservice running on port ${port}`)
+        })
+    }).catch((error) => {
+        console.log(`${error} \n  Cannot connect to database!` )
+    })
