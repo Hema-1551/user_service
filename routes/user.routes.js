@@ -10,26 +10,26 @@ router.post('/signup',userController.createUser);
 router.get('/',userController.getAllUsers);
 
 //fetch user by id
-router.get('/:id',userController.getUserById);
+router.get('/:userId',userController.getUserById);
 
 
 //delete user by id
-router.delete('/:id',userController.deleteUserById);
+router.delete('/:userId',userController.deleteUserById);
 
 
 
 //Update user by id
-router.put('/:id',userController.update_User_Details_ById);
+router.put('/:userId',userController.updateUserDetailsById);
 
 
 //Fetching request to work using UserID
 router.get('/:userId/request',userController.fetchRequestesOfuserId);
 
 //Fetching request user by id
-router.get('/:id/request/:requested_id',userController.getRequestedUserIdByUserId);
+router.get('/:userId/request/:requested_id',userController.getRequestedUserIdOfUser);
 
 //Deleteing request user by id
-router.delete('/:id/request/:requested_id',userController.deleteRequest_UserById);
+router.delete('/:userId/request/:requested_id',userController.deleteRequest_UserById);
 
 
 

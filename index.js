@@ -44,7 +44,7 @@ mongoose.connect(process.env.MONGO_URL,
     {useNewUrlParser: true, useUnifiedTopology: true})
     .then(() => {
         app.listen(port, () => {
-            console.log(`User microservice running on port ${port}`)
+            console.log(`User microservice running on port  ${port}`)
         })
     }).catch((error) => {
         console.log(`${error} \n  Cannot connect to database!` )
