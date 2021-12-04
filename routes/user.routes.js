@@ -26,11 +26,12 @@ router.put('/:userId',userController.updateUserDetailsById);
 router.get('/:userId/request',userController.fetchRequestesOfuserId);
 
 //Fetching request user by id
-router.get('/:userId/request/:requested_id',userController.getRequestedUserIdOfUser);
+router.get('/:userId/requests/:requested_id',userController.getRequestedUserIdOfUser);
 
 //Deleteing request user by id
-router.delete('/:userId/request/:requested_id',userController.deleteRequest_UserById);
+router.delete('/:userId/requests/:requested_id',userController.deleteRequestUserById);
 
-
+//request for work
+router.post('/:userId/requestWork/:employerId')
 
 module.exports = router

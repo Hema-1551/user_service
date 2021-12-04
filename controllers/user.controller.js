@@ -101,18 +101,16 @@ exports.getRequestedUserIdOfUser = async (req, res) => {
     }
 }
 
-/* just copy pasted , not yet working
-//For Ignore the request
+/* 
+For Ignore the request
 //Id has to be deleted from the requests array.
 Two Id's required: actual user Id and userId whom we want to cancel the request
 
 id: is actual UserId,
 requested_id: the one who have requested.
 */
-exports.deleteRequest_UserById = async (req, res) => {
+exports.deleteRequestUserById = async (req, res) => {
     try {
-
-
         const user = await usersCollectionReference.find({ "userId": req.params.userId })
         const requestArray = user[0].requests;
 
@@ -120,25 +118,29 @@ exports.deleteRequest_UserById = async (req, res) => {
             return value !== req.params.requested_id;
         });
 
-
-        res.send(updatedRequestsArray)
-
-        //updating the requestedids array  in backend mongodb
+        // updating the requestedids array  in backend mongodb
         const updatedUser = await usersCollectionReference.findOneAndUpdate({ userId: req.params.userId },
-            { $set: requests : updatedRequestsArray }, { new: true })
-
-
-        // Memo.updateOne(
-        //   { "_id" : ObjectId("5b8e83957d56e802274d6") },
-        //   { $set: { "text" : "updated" } });
-
-        // user.requests].remove(req.params.requested_id)
-        // const savedUser = await user.save()
-        // res.status(200).send({
-        //     requestsId_array: (requestsId_array == null) ? "no Requests" : requestsId_array
-        // })
+            { requests: updatedRequestsArray }, { new: true });
+        res.send(updatedUser)
     } catch (error) {
         res.status(500).json(error)
     }
 }
+//still working
+// Upon clicking on the request button ,
+// UserID is added to the requests Array of the one who posted work
+exports.requestForWork = async (req, res) => {
+    try {
+        const employerId = await usersCollectionReference.find({ "userId": req.params.employerId })
 
+        const requestArray = employerId[0].requests;
+        requestArray.push(req.params.userId);
+        const updateuser = await usersCollectionReference.findOneAndUpdate({ userId: req.params.employerId },
+            { requests: requestArray }, 
+            { new: true });
+
+        res.status(200).send()
+    } catch (error) {
+        res.status(500).json(error)
+    }
+}

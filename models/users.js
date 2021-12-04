@@ -23,6 +23,7 @@ const UsersSchema = new mongoose.Schema({
     },
     requests:{
         type:Array,
+        
     },
     connections:{
         type:Array,
