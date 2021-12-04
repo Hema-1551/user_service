@@ -5,16 +5,17 @@ const usersCollectionReference = require('../models/users')
 exports.createUser = async (req, res) => {
     //Reteriving user to check whether existing or not
     const user = await usersCollectionReference.find({ "userId": req.body.userId })
-    const newUserRow = new usersCollectionReference(req.body)
 
+    const newUserRow = new usersCollectionReference(req.body)
     try {
-        if (!user) {
+        if (user.length === 0) {
             const savedUser = await newUserRow.save()
             res.status(200).json(savedUser)
         }
         else
             res.send("UserId Existing already")
     } catch (error) {
+        console.log(error)
         res.status(500).json(error)
     }
 }
@@ -115,7 +116,8 @@ exports.deleteRequestUserById = async (req, res) => {
         const requestArray = user[0].requests;
 
         const updatedRequestsArray = requestArray.filter(function (value, index, requestArray) {
-            return value !== req.params.requested_id;
+            console.log(value.userId)
+            return value.userId !== req.params.requested_id;
         });
 
         // updating the requestedids array  in backend mongodb
@@ -126,20 +128,24 @@ exports.deleteRequestUserById = async (req, res) => {
         res.status(500).json(error)
     }
 }
-//still working
+
 // Upon clicking on the request button ,
 // UserID is added to the requests Array of the one who posted work
 exports.requestForWork = async (req, res) => {
     try {
         const employerId = await usersCollectionReference.find({ "userId": req.params.employerId })
 
+        const userId = req.params.userId;
+        const workId = req.params.workId;
         const requestArray = employerId[0].requests;
-        requestArray.push(req.params.userId);
+        requestArray.push(
+            [{ userId, workId }]
+        );
         const updateuser = await usersCollectionReference.findOneAndUpdate({ userId: req.params.employerId },
-            { requests: requestArray }, 
+            { requests: requestArray },
             { new: true });
 
-        res.status(200).send()
+        res.status(200).send(updateuser)
     } catch (error) {
         res.status(500).json(error)
     }

@@ -3,7 +3,7 @@ const router = express.Router()
 const userController = require('../controllers/user.controller')
 
 
-//create new user in firestore
+//create new user 
 router.post('/signup',userController.createUser);
 
 // find all users
@@ -23,7 +23,7 @@ router.put('/:userId',userController.updateUserDetailsById);
 
 
 //Fetching request to work using UserID
-router.get('/:userId/request',userController.fetchRequestesOfuserId);
+router.get('/:userId/requests',userController.fetchRequestesOfuserId);
 
 //Fetching request user by id
 router.get('/:userId/requests/:requested_id',userController.getRequestedUserIdOfUser);
@@ -32,6 +32,6 @@ router.get('/:userId/requests/:requested_id',userController.getRequestedUserIdOf
 router.delete('/:userId/requests/:requested_id',userController.deleteRequestUserById);
 
 //request for work
-router.post('/:userId/requestWork/:employerId')
+router.post('/:userId/requestWork/:workId/:employerId', userController.requestForWork);
 
 module.exports = router

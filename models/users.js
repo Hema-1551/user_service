@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-const UsersSchema = new mongoose.Schema({
+const usersSchema = new mongoose.Schema({
     //user can be anyone whoever posting the work
     userId:{
         type:String,
@@ -23,19 +23,54 @@ const UsersSchema = new mongoose.Schema({
     },
     requests:{
         type:Array,
-        
+        items:{
+            type:Object,
+            properties:{
+                "userId":{
+                    type:String,
+                    required:true
+                },
+                "workId":{
+                    type:String,
+                    required:true
+                }
+            }
+        }
     },
     connections:{
         type:Array,
-        default:[123,234]
+        items:{
+            type:Object,
+            properties:{
+                "userId":{
+                    type:String,
+                    required:true
+                },
+                "workId":{
+                    type:String,
+                    required:true
+                }
+            }
+        }
     },
     invitations:{
         type:Array,
-        default:[]
+        items:{
+            type:Object,
+            properties:{
+                "userId":{
+                    type:String,
+                    required:true
+                },
+                "workId":{
+                    type:String,
+                    required:true
+                }
+            }
+        }
     }
-
 },
 {timestamps:true}
 )
 
-module.exports = mongoose.model('Users', UsersSchema)
+module.exports = mongoose.model('Users', usersSchema)
