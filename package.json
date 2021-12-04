@@ -25,7 +25,7 @@
     "express": "^4.17.1",
     "firebase-admin": "^10.0.0",
     "helmet": "^4.6.0",
-    "mongoose": "^6.0.13",
+    "mongoose": "^6.0.14",
     "morgan": "^1.10.0"
   },
   "devDependencies": {
