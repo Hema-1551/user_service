@@ -25,7 +25,7 @@ router.put('/:userId',userController.updateUserDetailsById);
 //Fetching request to work using UserID
 router.get('/:userId/requests',userController.fetchRequestesOfuserId);
 
-//Fetching request user by id
+//Fetching requested user by id
 router.get('/:userId/requests/:requested_id',userController.getRequestedUserIdOfUser);
 
 //Deleteing request user by id
@@ -34,4 +34,7 @@ router.delete('/:userId/requests/:requested_id',userController.deleteRequestUser
 //request for work
 router.post('/:userId/requestWork/:workId/:employerId', userController.requestForWork);
 
+
+//Connect the request
+router.get('/:userId/acceptUser/:workId/:workerId', userController.connectUserFromRequests)
 module.exports = router

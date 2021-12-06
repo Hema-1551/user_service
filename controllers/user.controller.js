@@ -139,13 +139,63 @@ exports.requestForWork = async (req, res) => {
         const workId = req.params.workId;
         const requestArray = employerId[0].requests;
         requestArray.push(
-            [{ userId, workId }]
+            { userId, workId }
         );
-        const updateuser = await usersCollectionReference.findOneAndUpdate({ userId: req.params.employerId },
+        const updatedUser = await usersCollectionReference.findOneAndUpdate({ userId: req.params.employerId },
             { requests: requestArray },
             { new: true });
 
-        res.status(200).send(updateuser)
+        res.status(200).send(updatedUser)
+    } catch (error) {
+        res.status(500).json(error)
+    }
+}
+
+/*
+
+1) get user details and remove request
+2)push details to connections array 
+3) update user 
+
+*/
+exports.connectUserFromRequests = async (req, res) => {
+    try {
+        //step 1
+        const user = await usersCollectionReference.find({ "userId": req.params.userId })
+        const requestArray = user[0].requests;
+
+        console.log("mongo db request format ")
+        console.log(user[0].requests)
+        const updatedRequestsArray = requestArray.filter(function (value, index, requestArray) {
+
+            return value.userId !== req.params.workerId;
+        });
+
+        console.log(updatedRequestsArray)
+        //step 2
+        const userId = req.params.workerId;
+        const workId = req.params.workId;
+        const connectionsArray = user[0].connections;
+        connectionsArray.push(
+            { userId, workId }
+        );
+        console.log(connectionsArray)
+
+
+        //step 3
+        const updatedUser = await usersCollectionReference.updateMany({ userId: req.params.userId },
+            { $set: {requests: updatedRequestsArray} },
+            { $set: {connections: connectionsArray }},
+            {multi: true});
+
+            // const updatedUser = await usersCollectionReference.findOneAndUpdate({ userId: req.params.userId },
+            //     { requests: updatedRequestsArray },
+            //     { connections: connectionsArray },
+            //     { new: true });
+        
+        console.log(updatedUser)
+        res.status(200).send(updatedUser)
+
     } catch (error) {
         res.status(500).json(error)
     }
