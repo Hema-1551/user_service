@@ -164,14 +164,10 @@ exports.connectUserFromRequests = async (req, res) => {
         const user = await usersCollectionReference.find({ "userId": req.params.userId })
         const requestArray = user[0].requests;
 
-        console.log("mongo db request format ")
-        console.log(user[0].requests)
-        const updatedRequestsArray = requestArray.filter(function (value, index, requestArray) {
 
+        const updatedRequestsArray = requestArray.filter(function (value, index, requestArray) {
             return value.userId !== req.params.workerId;
         });
-
-        console.log(updatedRequestsArray)
         //step 2
         const userId = req.params.workerId;
         const workId = req.params.workId;
@@ -179,20 +175,16 @@ exports.connectUserFromRequests = async (req, res) => {
         connectionsArray.push(
             { userId, workId }
         );
-        console.log(connectionsArray)
-
 
         //step 3
-        const updatedUser = await usersCollectionReference.updateMany({ userId: req.params.userId },
-            { $set: {requests: updatedRequestsArray} },
-            { $set: {connections: connectionsArray }},
-            {multi: true});
+        const updatedUser = await usersCollectionReference.findOneAndUpdate(
+            { userId: req.params.userId },
+            {
+                requests: updatedRequestsArray,
+                connections: connectionsArray
+            },
+            { new: true });
 
-            // const updatedUser = await usersCollectionReference.findOneAndUpdate({ userId: req.params.userId },
-            //     { requests: updatedRequestsArray },
-            //     { connections: connectionsArray },
-            //     { new: true });
-        
         console.log(updatedUser)
         res.status(200).send(updatedUser)
 
