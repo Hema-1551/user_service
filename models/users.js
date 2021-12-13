@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 
 const usersSchema = new mongoose.Schema({
-    //user can be anyone whoever posting the work
+    //user can be anyone whoever posting or can accepting the work
     userId:{
         type:String,
         required:true
@@ -20,6 +20,33 @@ const usersSchema = new mongoose.Schema({
         type:Number,
         required:true,
         length:10
+    },
+    skills:{
+        type:Array,
+        "uniqueItems": true,
+    },
+    rating:{
+        type:String
+    },
+    location:{
+        type:Array,
+        items:{
+            type:Object,
+            properties:{
+                address:{
+                    type:String,
+                    required:true
+                },
+                longitude:{
+                    type:String,
+                    required:true
+                },
+                lattitude:{
+                    type:String,
+                    required:true
+                }
+            }
+        }
     },
     requests:{
         type:Array,
@@ -68,7 +95,8 @@ const usersSchema = new mongoose.Schema({
                 }
             }
         }
-    }
+    },
+    
 },
 {timestamps:true}
 )

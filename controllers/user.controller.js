@@ -4,7 +4,13 @@ const usersCollectionReference = require('../models/users')
 //method to post the user
 exports.createUser = async (req, res) => {
     //Reteriving user to check whether existing or not
-    const user = await usersCollectionReference.find({ "userId": req.body.userId })
+    const user = await usersCollectionReference.find({ "userId": req.body.userId },
+        {
+            projection: {
+                userId: 1
+            }
+            //only _id object id is projected 
+        })
 
     const newUserRow = new usersCollectionReference(req.body)
     try {
@@ -12,8 +18,11 @@ exports.createUser = async (req, res) => {
             const savedUser = await newUserRow.save()
             res.status(200).json(savedUser)
         }
-        else
+        else {
+
             res.send("UserId Existing already")
+        }
+
     } catch (error) {
         console.log(error)
         res.status(500).json(error)
@@ -22,8 +31,36 @@ exports.createUser = async (req, res) => {
 
 exports.getAllUsers = async (req, res) => {
     try {
-        const users = await usersCollectionReference.find()
+        const filters = req.query.skills;
+
+        const  users = [];// = new Set();
+        
+        filters.forEach(async function (skill) {
+            
+          const  user = await usersCollectionReference.find({ "skills": skill })
+            console.log(user)
+            users.push(...user);
+        });
+        
+        console.log("printing final users")
+        console.log(users)
+
+
+        // const users = await usersCollectionReference.find()
+        // const filteredUsers = []
+        // users.forEach(function (user) {
+        // await usersCollectionReference.find({ "skills": skill })
+        //     const skill = user["skills"]
+
+        //     skill.forEach(function (s) {
+        //         if (s in filters) {
+        //             filteredUsers.push(user)
+
+        //         }
+        //     })
+        // });
         res.status(200).json(users)
+
     } catch (error) {
         res.status(500).json(error)
     }
